@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#12314b">
+  <title>멈출 수 있을까? - 정지거리 편 -</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="phase1-update.css">
+  <link rel="stylesheet" href="phase6.css">
+</head>
+<body>
+  <main id="app">
+    <button class="global-back" id="backBtn" type="button" aria-label="이전 화면으로 이동">← 이전</button>
+    <section class="screen intro active" id="intro" aria-labelledby="intro-title">
+      <p class="eyebrow">체험형 교통안전교육 프로그램</p>
+      <div class="title-mark" aria-hidden="true">50</div>
+      <h1 id="intro-title">멈출 수 있을까?</h1>
+      <p class="subtitle">- 정지거리 편 -</p>
+      <button class="primary" id="enterBtn">체험 시작하기</button>
+      <div class="utility-entry"><button class="instructor-entry" id="instructorBtn">교수용</button><button class="instructor-entry" id="adminBtn">관리자</button></div>
+    </section>
+
+    <section class="screen survey-intro" id="preSurveyIntro" aria-labelledby="pre-survey-title">
+      <p class="eyebrow">체험 전 생각</p>
+      <h2 id="pre-survey-title">체험하기 전에<br>잠깐 생각해볼까요?</h2>
+      <p>지금 생각하는 답을 편하게 골라주세요.</p>
+      <button class="primary" id="preSurveyStartBtn">시작하기</button>
+    </section>
+
+    <section class="screen survey-question" id="surveyQuestion" aria-labelledby="survey-question-title">
+      <p class="question-count" id="surveyCount">1 / 3</p>
+      <h2 id="survey-question-title">질문</h2>
+      <div class="answer-list" id="surveyAnswers" role="group" aria-label="답변 선택"></div>
+      <p class="survey-helper">지금 생각과 가장 가까운 답을 하나 골라주세요.</p>
+    </section>
+
+    <section class="screen guide" id="guide" aria-labelledby="guide-title">
+      <p class="eyebrow" id="guideEyebrow">첫 번째 체험</p>
+      <h2 id="guide-title"><span id="guideLead">먼저</span> <span id="guideSpeed">50</span>km/h로<br><span id="guideEnding">달려볼게요.</span></h2>
+      <div class="guide-card">
+        <strong>앞을 잘 보세요.</strong>
+        <p>도로에 장애물이 나타나면<br>브레이크 버튼을 눌러주세요.</p>
+      </div>
+      <button class="primary" id="startBtn">시작하기</button>
+      <p class="key-hint">PC에서는 <kbd>Space</kbd> 키도 사용할 수 있어요.</p>
+    </section>
+
+    <section class="screen drive" id="drive" aria-label="정지거리 체험 주행 화면">
+      <header class="drive-header">
+        <span>현재 속도</span>
+        <strong><span id="speedValue">50</span> <small>km/h</small></strong>
+      </header>
+      <div class="scene" id="scene" aria-label="도심 도로를 달리는 자동차">
+        <div class="skyline far"></div>
+        <div class="skyline near"></div>
+        <div class="trees"><i></i><i></i><i></i><i></i></div>
+        <div class="sidewalk"></div>
+        <div class="road">
+          <div class="lane-marks"></div>
+        </div>
+        <div class="braking-measure" id="brakingMeasure" aria-hidden="true">
+          <span class="brake-marker">▼ <b>브레이크 기준</b></span>
+          <i class="braking-trail" id="brakingTrail"></i>
+          <span class="stop-marker" id="stopMarker">● <b>정지</b></span>
+        </div>
+        <div class="crate" id="crate" aria-label="도로에 떨어진 화물 상자"><span>↗</span></div>
+        <div class="car" id="car" aria-hidden="true">
+          <div class="car-shadow"></div>
+          <div class="car-body"><div class="window front"></div><div class="window back"></div><div class="light"></div></div>
+          <div class="wheel rear"><i></i></div><div class="wheel front"><i></i></div>
+        </div>
+      </div>
+      <p class="drive-message" id="driveMessage" aria-live="polite"></p>
+      <button class="brake" id="brakeBtn"><span aria-hidden="true">●</span> 브레이크</button>
+    </section>
+
+    <section class="screen result" id="result" aria-labelledby="result-title">
+      <p class="result-speed" id="resultStatus">자동차가 완전히 멈췄습니다</p>
+      <h2 class="sr-only" id="result-title">정지거리 체험 결과</h2>
+      <strong class="stopping-result"><span id="totalDistance">0.0</span><small>m</small></strong>
+      <p class="result-copy" id="resultDescription">위험을 발견한 순간부터<br>완전히 멈출 때까지 이동한 거리</p>
+      <p class="result-meaning" id="resultMeaning">이것이 <strong>정지거리</strong>입니다.</p>
+      <div class="result-road" aria-label="위험 발견 지점부터 최종 정지 위치까지의 거리">
+        <div class="result-road-labels"><span>위험 발견</span><span>최종 정지</span></div>
+        <div class="result-road-line"><i class="start-pin"></i><span class="road-dashes"></span><div class="result-car" aria-hidden="true"><i></i><i></i></div><i class="end-pin"></i></div>
+        <strong><span id="resultRoadDistance">0.0</span>m</strong>
+      </div>
+      <button class="primary" id="detailBtn">정지거리 자세히 보기</button>
+    </section>
+
+    <section class="screen detail" id="detail" aria-labelledby="detail-title">
+      <p class="eyebrow">체험 결과</p>
+      <h2 id="detail-title">정지거리를 자세히 알아볼까요?</h2>
+      <div class="equation">
+        <div class="coasting-card"><h3>공주거리</h3><p>위험을 보고 <b>→</b><br>브레이크를 밟기 전까지</p><strong><span id="reactionDistance">0.0</span>m</strong></div>
+        <b aria-label="더하기">+</b>
+        <div class="braking-card"><h3>제동거리</h3><p>브레이크를 밟고 <b>→</b><br>완전히 멈출 때까지</p><strong><span id="brakingDistance">28.7</span>m</strong></div>
+        <b aria-label="합계">=</b>
+        <div class="total"><h3>정지거리</h3><strong><span id="detailTotal">0.0</span>m</strong></div>
+      </div>
+      <div class="distance-visual" aria-label="공주거리와 제동거리 시각화">
+        <div class="visual-labels"><span>위험 발견 지점</span><span>완전히 멈춘 지점</span></div>
+        <div class="distance-track"><div class="reaction-segment" id="reactionSegment"></div><div class="braking-segment" id="brakingSegment"></div><i class="brake-point" id="brakePoint"></i></div>
+        <div class="track-caption"><span>0m</span><span id="brakeCaption">브레이크</span><span id="endCaption">0.0m</span></div>
+        <div class="legend"><span><i class="reaction-color"></i>공주거리</span><span><i class="braking-color"></i>제동거리</span></div>
+      </div>
+      <p class="detail-message">브레이크를 밟는 순간 자동차가 바로 멈추는 것은 아닙니다.</p>
+      <p class="reaction-note">체험 중 측정된 반응시간 <strong><span id="reactionTime">0.00</span>초</strong></p>
+      <button class="secondary" id="restartBtn">다른 속도로 체험하기</button>
+    </section>
+
+    <section class="screen speed-select" id="speedSelect" aria-labelledby="speed-title">
+      <p class="eyebrow">속도 선택</p>
+      <h2 id="speed-title">속도가 달라지면<br>어떨까요?</h2>
+      <p class="selection-copy">다른 속도에서도 직접 확인해보세요.</p>
+      <div class="speed-grid" id="speedGrid" aria-label="체험 속도 선택">
+        <button data-speed="30"><strong>30</strong><span>km/h</span></button>
+        <button data-speed="40"><strong>40</strong><span>km/h</span></button>
+        <button data-speed="50"><strong>50</strong><span>km/h</span></button>
+        <button data-speed="60"><strong>60</strong><span>km/h</span></button>
+        <button data-speed="70"><strong>70</strong><span>km/h</span></button>
+        <button data-speed="80"><strong>80</strong><span>km/h</span></button>
+        <button data-speed="90"><strong>90</strong><span>km/h</span></button>
+        <button data-speed="100"><strong>100</strong><span>km/h</span></button>
+      </div>
+      <p class="selection-hint" id="selectionHint">✓ 표시는 이미 체험한 속도입니다.</p>
+    </section>
+
+    <section class="screen compare" id="compare" aria-labelledby="compare-title">
+      <p class="eyebrow">같은 조건으로 비교</p>
+      <h2 id="compare-title">속도가 달라지자 <span class="compare-title-key">정지거리</span>도 이렇게 달라졌습니다.</h2>
+      <p class="compare-subtitle">두 속도를 같은 조건으로 비교해볼게요.</p>
+      <p class="standard-note" id="standardNote"></p>
+      <p class="comparison-context">속도의 영향만 비교하기 위해 두 속도에 같은 조건을 적용했습니다.</p>
+      <div class="compare-bars" id="compareBars"></div>
+      <div class="distance-difference">
+        <p>속도가 <span id="speedDifference">0</span>km/h 높아지면</p>
+        <strong>멈추는 데 약 <span id="distanceDifference">0.0</span>m가 더 필요합니다.</strong>
+      </div>
+      <p class="ratio-copy" id="ratioCopy"></p>
+      <div class="why-card">
+        <h3>속도가 높아질수록 멈추는 데 필요한 거리는 크게 늘어납니다.</h3>
+        <p>속도가 높아질수록 브레이크를 밟기 전 이동하는 거리뿐 아니라, 브레이크를 밟은 뒤 멈추는 거리도 크게 늘어나기 때문입니다.</p>
+      </div>
+      <div class="source-info">
+        <p>기준자료: AASHTO 정지시거(Stopping Sight Distance) 기준 / FHWA 자료</p>
+        <details>
+          <summary>기준 자세히 보기</summary>
+          <div class="source-panel">
+            <h3>정지거리 비교 기준</h3>
+            <p>본 프로그램의 기준 정지거리는 AASHTO의 정지시거(Stopping Sight Distance) 산정 기준을 적용했습니다.</p>
+            <ul>
+              <li><strong>인지·반응시간:</strong> 2.5초</li>
+              <li><strong>감속도:</strong> 3.4m/s²</li>
+              <li><strong>적용 속도:</strong> 30~100km/h</li>
+            </ul>
+            <p>정지거리는 위험을 인지하고 브레이크를 밟기까지 이동한 거리와 제동 후 완전히 정지하기까지 이동한 거리를 합산하여 산정합니다.</p>
+            <h4>출처</h4>
+            <p>AASHTO, <cite>A Policy on Geometric Design of Highways and Streets</cite></p>
+            <p>Federal Highway Administration (FHWA), <cite>Signalized Intersections: Informational Guide</cite></p>
+          </div>
+        </details>
+      </div>
+      <div class="compare-actions">
+        <button class="primary" id="personalBtn">다음으로</button>
+        <button class="secondary small-action" id="moreSpeedBtn">다른 속도도 체험하기</button>
+      </div>
+    </section>
+
+    <section class="screen personal" id="personal" aria-labelledby="personal-title">
+      <p class="eyebrow">나의 체험 기록</p>
+      <h2 id="personal-title">내가 체험한 결과</h2>
+      <p class="personal-subtitle">두 번의 체험 결과를 확인해보세요.</p>
+      <div class="personal-list" id="personalList"></div>
+      <div class="personal-guidance">
+        <strong>두 체험은 반응시간이 서로 다를 수 있습니다.</strong>
+        <span>속도의 영향만 비교하려면 같은 조건에서 비교해야 합니다.</span>
+      </div>
+      <button class="primary" id="backCompareBtn">같은 조건으로 비교하기</button>
+    </section>
+
+    <section class="screen complete" id="complete" aria-labelledby="complete-title">
+      <div class="complete-mark" aria-hidden="true">✓</div>
+      <h2 id="complete-title">체험을 완료했습니다.</h2>
+      <p>속도가 높아질수록 멈추는 데<br>더 긴 거리가 필요합니다.</p>
+      <button class="primary" id="homeBtn">처음으로</button>
+    </section>
+
+    <section class="screen survey-intro" id="postSurveyIntro" aria-labelledby="post-survey-title">
+      <p class="eyebrow">체험 후 생각</p>
+      <h2 id="post-survey-title">체험해보니<br>어떠셨나요?</h2>
+      <p>같은 질문에 다시 답해보세요.</p>
+      <button class="primary" id="postSurveyStartBtn">시작하기</button>
+    </section>
+
+    <section class="screen learning-summary" id="learningSummary" aria-labelledby="learning-title">
+      <p class="eyebrow">학습내용 정리</p>
+      <h2 id="learning-title">오늘 확인한 3가지</h2>
+      <div class="learning-points">
+        <p><b class="learning-number">①</b><span><strong class="learning-key-blue">브레이크를 밟아도</strong> 바로 멈추지 않습니다.</span></p>
+        <p><b class="learning-number">②</b><span><strong class="learning-key-stopping">정지거리는</strong> <em class="learning-key-coasting">공주거리</em> + <em class="learning-key-braking">제동거리</em>입니다.</span></p>
+        <p><b class="learning-number">③</b><span><strong class="learning-key-blue">속도가 높아질수록</strong> 정지거리는 크게 늘어납니다.</span></p>
+      </div>
+      <p class="learning-final-message">속도를 줄이면, 멈출 수 있는 여유가 커집니다.</p>
+      <button class="primary" id="learningCompleteBtn">체험 완료</button>
+    </section>
+
+    <section class="screen instructor" id="instructor" aria-labelledby="instructor-title">
+      <header class="instructor-header">
+        <div><p>체험형 교통안전교육 프로그램</p><h2 id="instructor-title">교수용 메뉴</h2></div>
+        <button id="instructorHomeBtn">처음으로</button>
+      </header>
+      <nav class="instructor-tabs" aria-label="교수용 메뉴">
+        <button class="active" data-instructor-tab="instructorCompare">속도 비교</button>
+        <button data-instructor-tab="instructorTable">기준표</button>
+        <button data-instructor-tab="instructorEvidence">근거자료</button>
+        <button data-instructor-tab="instructorPoints">강의 포인트</button>
+      </nav>
+
+      <div class="instructor-content">
+        <section class="instructor-panel active" id="instructorCompare" aria-labelledby="instructor-compare-title">
+          <h3 id="instructor-compare-title">두 속도 기준 정지거리 비교</h3>
+          <p class="instructor-standard">동일 조건: 인지·반응시간 2.5초 · 감속도 3.4m/s²</p>
+          <div class="instructor-speed-pickers">
+            <label>첫 번째 속도<select id="instructorSpeedA"></select></label>
+            <span>비교</span>
+            <label>두 번째 속도<select id="instructorSpeedB"></select></label>
+          </div>
+          <div class="instructor-comparison" id="instructorComparison"></div>
+          <div class="instructor-difference" id="instructorDifference"></div>
+        </section>
+
+        <section class="instructor-panel" id="instructorTable" aria-labelledby="instructor-table-title">
+          <h3 id="instructor-table-title">기준 정지거리 표</h3>
+          <div class="reference-table-wrap"><table class="reference-table">
+            <thead><tr><th>속도</th><th>공주거리</th><th>제동거리</th><th>정지거리</th></tr></thead>
+            <tbody id="instructorTableBody"></tbody>
+          </table></div>
+          <p class="table-note">기준 반응시간 2.5초 · 감속도 3.4m/s² 적용</p>
+        </section>
+
+        <section class="instructor-panel" id="instructorEvidence" aria-labelledby="instructor-evidence-title">
+          <h3 id="instructor-evidence-title">정지거리 산정 기준</h3>
+          <div class="evidence-grid">
+            <article><h4>거리의 구성</h4><p><strong>정지거리 = 공주거리 + 제동거리</strong></p><p>공주거리 = 위험 인지 후 브레이크를 밟기 전까지 이동한 거리</p><p>제동거리 = 브레이크를 밟은 뒤 완전히 멈출 때까지 이동한 거리</p></article>
+            <article><h4>기준 조건</h4><p>기준 인지·반응시간: <strong>2.5초</strong></p><p>기준 감속도: <strong>3.4m/s²</strong></p><p class="evidence-note">2.5초는 개인의 실제 반응시간이 아니라 정지시거 산정을 위한 설계 기준값입니다.</p></article>
+            <article><h4>계산식</h4><p>공주거리 = 0.278 × 속도(km/h) × 반응시간(초)</p><p>제동거리 = 0.039 × 속도² ÷ 3.4</p><p>정지거리 = 공주거리 + 제동거리</p></article>
+            <article><h4>출처</h4><p>AASHTO, <cite>A Policy on Geometric Design of Highways and Streets</cite></p><p>Federal Highway Administration (FHWA), <cite>Signalized Intersections: Informational Guide</cite></p></article>
+          </div>
+          <p class="simulation-notice">본 프로그램은 교육용 시뮬레이션이며 실제 정지거리는 운전자, 차량, 타이어, 노면, 기상 및 도로 조건에 따라 달라질 수 있습니다.</p>
+        </section>
+
+        <section class="instructor-panel" id="instructorPoints" aria-labelledby="instructor-points-title">
+          <h3 id="instructor-points-title">강의 포인트</h3>
+          <div class="lecture-cards">
+            <article><span>핵심 포인트 1</span><p>위험을 발견하는 순간 자동차가 멈추는 것이 아닙니다. 운전자가 위험을 보고 판단하고 브레이크를 밟는 동안에도 자동차는 계속 이동합니다.</p></article>
+            <article><span>핵심 포인트 2</span><p>브레이크를 밟은 뒤에도 자동차는 일정 거리를 더 이동합니다.</p></article>
+            <article><span>핵심 포인트 3</span><p>속도가 높아질수록 정지거리는 단순히 같은 비율로 늘어나지 않고 더 크게 증가할 수 있습니다.</p></article>
+            <article><span>핵심 포인트 4</span><p>50km/h와 100km/h를 비교하면 속도는 2배지만 기준 정지거리는 약 63.4m에서 184.2m로 약 2.9배가 됩니다.</p></article>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="screen admin-login" id="adminLogin" aria-labelledby="admin-login-title">
+      <p class="eyebrow">관리자 전용</p>
+      <h2 id="admin-login-title">관리자 메뉴</h2>
+      <p>비밀번호를 입력해주세요.</p>
+      <form id="adminLoginForm">
+        <label for="adminPassword">비밀번호</label>
+        <input id="adminPassword" type="password" inputmode="numeric" autocomplete="current-password" required>
+        <p class="admin-login-error" id="adminLoginError" aria-live="polite"></p>
+        <button class="primary" type="submit">확인</button>
+      </form>
+      <button class="text-button" id="adminLoginHomeBtn">처음으로</button>
+    </section>
+
+    <section class="screen admin" id="admin" aria-labelledby="admin-title">
+      <header class="admin-header"><div><p>로컬 데이터 관리</p><h2 id="admin-title">관리자 메뉴</h2></div><button id="adminHomeBtn">처음으로</button></header>
+      <nav class="admin-tabs" aria-label="관리자 메뉴">
+        <button class="active" data-admin-tab="adminSurveySettings">효과성 측정 설정</button>
+        <button data-admin-tab="adminExperienceSettings">체험 설정</button>
+        <button data-admin-tab="adminStats">결과 통계</button>
+        <button data-admin-tab="adminData">데이터 관리</button>
+      </nav>
+      <div class="admin-content">
+        <section class="admin-panel active" id="adminSurveySettings">
+          <h3>효과성 측정 설정</h3>
+          <div class="setting-card"><div><strong>사전·사후 효과성 측정 사용</strong><p>끄면 교육생은 설문 없이 체험과 완료 화면으로 이동합니다.</p></div><label class="toggle"><input id="settingSurvey" type="checkbox"><span></span><b>ON / OFF</b></label></div>
+          <p class="settings-saved" aria-live="polite">변경한 설정은 이 브라우저에 자동 저장됩니다.</p>
+        </section>
+        <section class="admin-panel" id="adminExperienceSettings">
+          <h3>체험 설정</h3>
+          <div class="settings-block"><h4>사용 가능한 속도</h4><div class="admin-speed-options" id="adminSpeedOptions"></div><p>50km/h는 첫 번째 기본 체험 속도로 항상 활성화됩니다.</p></div>
+          <div class="setting-card"><div><strong>첫 체험 기본속도</strong><p>향후 변경 가능한 구조이며 현재 버전은 50km/h를 사용합니다.</p></div><select id="settingDefaultSpeed" disabled><option value="50">50 km/h</option></select></div>
+          <div class="setting-card"><div><strong>브레이크 제동음</strong><p>교육생 체험의 짧은 제동 효과음입니다.</p></div><label class="toggle"><input id="settingSound" type="checkbox"><span></span><b>ON / OFF</b></label></div>
+          <div class="setting-card"><div><strong>자동으로 처음 화면으로 돌아가기</strong><p>체험 완료 후 25초 동안 조작이 없으면 처음 화면으로 이동합니다.</p></div><label class="toggle"><input id="settingAutoReturn" type="checkbox"><span></span><b>ON / OFF</b></label></div>
+        </section>
+        <section class="admin-panel" id="adminStats">
+          <h3>결과 통계</h3>
+          <div class="stat-cards" id="adminStatCards"></div>
+          <div id="surveyStats"></div>
+          <div class="admin-speed-stats"><h4>추가 체험 선택 속도</h4><div id="adminSpeedBars"></div></div>
+        </section>
+        <section class="admin-panel" id="adminData">
+          <h3>데이터 관리</h3>
+          <div class="data-actions"><button class="primary small-action" id="csvBtn">CSV로 저장</button><button class="danger-button" id="deleteDataBtn">전체 데이터 삭제</button><button class="secondary small-action" id="resetSettingsBtn">설정 초기화</button></div>
+          <p class="local-data-note">개인정보 없이 이 브라우저에 저장된 익명 세션만 표시합니다.</p>
+          <div class="session-table-wrap"><table class="session-table"><thead><tr><th>세션</th><th>일시</th><th>체험속도</th><th>체험횟수</th><th>설문완료</th></tr></thead><tbody id="sessionTableBody"></tbody></table></div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script src="survey.js"></script>
+  <script src="instructor.js"></script>
+  <script src="admin.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
