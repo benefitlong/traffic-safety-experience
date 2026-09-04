@@ -22,8 +22,8 @@
       ],
       choices: [
         '① 거의 비슷하다',
-        '② 약 2배 길어진다',
-        '③ 2배보다 더 길어진다',
+        '② 2배보다 더 길어진다',
+        '③ 약 2배 길어진다',
         '④ 잘 모르겠다'
       ]
     },
@@ -42,7 +42,7 @@
   ];
 
   // 향후 교수용·관리자용 분석에서만 사용한다. 교육생 질문 화면에는 표시하지 않는다.
-  const CORRECT_ANSWER_CODES = { q1: 3, q2: 3, q3: 3 };
+  const CORRECT_ANSWER_CODES = { q1: 3, q2: 2, q3: 3 };
   const survey = { pre: {}, post: {} };
   let enabled = true;
   let currentType = 'pre';

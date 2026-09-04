@@ -1,0 +1,47 @@
+/* 주행 체험 전용 최종 레이어. 기존 계산/애니메이션 DOM 계약은 유지한다. */
+.drive{min-height:100dvh;padding:0;background:#f7f9fa;color:#102737;overflow:auto}
+.drive-header{position:relative;z-index:2;width:100%;height:auto;min-height:168px;padding:22px 20px 18px;background:linear-gradient(180deg,#b9e9f8,#d9f2f7);color:#102737}
+.drive-header h2{margin:0;font-size:clamp(1.35rem,3.2vw,2rem);letter-spacing:-.035em}
+.drive-header p{margin:8px 0 16px;color:#315365;font-size:clamp(.86rem,1.8vw,1rem);font-weight:700}
+.drive-status{display:flex;align-self:center;align-items:center;gap:16px;width:fit-content;min-width:0;padding:10px 18px;border:1px solid #c8dde3;border-radius:11px;background:rgba(255,255,255,.9);box-shadow:0 5px 14px rgba(20,56,72,.1)}
+.drive-status>span{color:#4e6875;font-size:19px;font-weight:700}.drive-status strong{color:#12314b;font-size:29px;font-weight:800;line-height:1}.drive-status small{font-size:19px;font-weight:700}
+.scene{flex:0 0 auto;height:clamp(330px,48dvh,500px);min-height:330px;background:linear-gradient(180deg,#bcebf7 0,#d9f1f4 56%,#657177 56%);--motion-speed:1.25s}
+.scene:before{top:3%;height:19%;opacity:.3}
+.skyline.far{bottom:43%;height:43%;opacity:.27}.skyline.near{bottom:43%;height:34%;opacity:.45}
+.trees{bottom:42%;height:92px;opacity:.82}.sidewalk{bottom:34%;height:9%}
+.road{bottom:0;height:35%;border-top:4px solid #e7e8e3;background:linear-gradient(#4d575e,#343d43)}
+.lane-marks{top:45%;height:4px;background:repeating-linear-gradient(90deg,#f7f7ef 0 76px,transparent 76px 138px)}
+.distance-scale{position:absolute;z-index:7;left:5%;right:5%;bottom:1.8%;display:flex;justify-content:space-between;padding-top:12px;border-top:3px solid rgba(255,255,255,.86);color:#fff;font-size:clamp(.65rem,1.5vw,.86rem);font-weight:800;text-shadow:0 1px 2px #15232b}
+.distance-scale span{position:relative;min-width:34px}.distance-scale span:before{content:"";position:absolute;top:-15px;left:50%;width:2px;height:8px;background:#fff}
+.car{z-index:6;left:27%;bottom:14%;width:clamp(285px,38vw,470px);height:auto;aspect-ratio:640/230}
+.car-shadow{left:7%;bottom:3%;width:88%;height:12%;filter:blur(3px);background:rgba(8,18,24,.35)}
+.sedan{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 3px 2px rgba(16,32,40,.2))}
+.sedan-body{fill:url(#carPaint);stroke:#8b989f;stroke-width:3;stroke-linejoin:round}
+.sedan-glass{fill:url(#carGlass);stroke:#667780;stroke-width:3;stroke-linejoin:round}
+.sedan-belt,.sedan-door,.sedan-sill,.sedan-handle,.sedan-bumper{fill:none;stroke:#9ba8ae;stroke-width:3;stroke-linecap:round}
+.sedan-door{stroke-width:2}.sedan-sill{stroke:#adb7bb}.sedan-handle{stroke:#7d898e;stroke-width:4}
+.sedan-headlight{fill:#fff2a5;stroke:#7d898e;stroke-width:2}.sedan-taillight{fill:#d95045;stroke:#8c3430;stroke-width:2}
+.sedan .wheel{position:static;left:auto;right:auto;bottom:auto;width:auto;aspect-ratio:auto;border:0;border-radius:0;background:none;box-shadow:none;animation:spin .5s linear infinite;transform-box:fill-box;transform-origin:center;fill:#202b31;stroke:#111a1f;stroke-width:5}
+.sedan .rim{fill:#89979d;stroke:#d5dde0;stroke-width:4}.sedan .spokes{fill:none;stroke:#d7dee1;stroke-width:5;stroke-linecap:round}.sedan .hub{fill:#34434a;stroke:#dce2e4;stroke-width:3}
+.crate{right:13%;bottom:69%;width:clamp(55px,7vw,76px);border:3px solid #77502f;border-radius:3px;background:linear-gradient(90deg,#a96f38 0 46%,#bf8648 47% 100%);box-shadow:inset 0 0 0 2px #d39b5a,0 5px 8px rgba(21,32,38,.22);font-size:0}
+.crate:before,.crate:after{content:"";position:absolute;background:#d5a05f}.crate:before{top:0;bottom:0;left:45%;width:10%}.crate:after{left:0;right:0;top:18%;height:3px}
+.crate.dropping{animation-name:redesign-crate-drop}
+.brake-panel{flex:0 0 auto;width:100%;min-height:88px;padding:15px 16px 10px;background:#133957;color:#fff}
+.brake-panel>strong{display:block;font-size:clamp(1.05rem,2.6vw,1.35rem)}.brake-panel>span{display:block;margin-top:6px;color:#d3e2eb;font-size:.82rem}
+.drive-message{height:18px;margin:5px 0 0;color:#ffd9a6;font-size:.78rem}
+.brake-control{display:grid;flex:1 0 128px;width:100%;min-height:128px;place-items:center;padding:12px 16px max(15px,env(safe-area-inset-bottom));background:#f7f9fa}
+.brake{width:112px;height:112px;min-height:112px;margin:0;border:5px solid #fff;border-radius:50%;background:linear-gradient(145deg,#ff6b42,#df382d);color:#fff;font-size:1.25rem;box-shadow:0 0 0 2px #ef4d38,0 7px 0 #a82420,0 12px 22px rgba(81,34,30,.25)}
+.brake span{display:none}.brake:active{transform:translateY(4px);box-shadow:0 0 0 2px #ef4d38,0 3px 0 #a82420,0 7px 13px rgba(81,34,30,.22)}
+.braking-measure{bottom:6%}
+@keyframes redesign-crate-drop{0%{transform:translateY(-8vh) rotate(-7deg)}75%{transform:translateY(27vh) rotate(4deg)}100%{transform:translateY(26vh) rotate(0)}}
+@media(max-width:640px){
+  .drive-header{min-height:150px;padding:16px 12px 13px}.drive-header h2{font-size:1.22rem}.drive-header p{margin:5px 0 11px;font-size:.76rem}
+  .drive-status{min-width:0;padding:8px 15px;gap:13px}.drive-status>span{font-size:16px}.drive-status strong{font-size:24px}.drive-status small{font-size:16px}
+  .scene{height:330px;min-height:330px}.car{left:29%;bottom:15%;width:clamp(205px,62vw,245px);height:auto}.crate{right:7%;width:52px}
+  .distance-scale{left:3%;right:3%;font-size:.62rem}.distance-scale span{min-width:28px}
+  .brake-panel{min-height:82px;padding-top:13px}.brake-panel>span{font-size:.72rem}
+  .brake-control{flex-basis:122px;min-height:122px}.brake{width:100px;height:100px;min-height:100px;font-size:1.12rem}
+  .braking-measure{left:29%;bottom:6%}
+}
+@media(min-width:641px) and (max-width:1024px){.car{width:clamp(270px,42vw,380px)}}
+@media(max-height:700px) and (orientation:landscape){.drive-header{min-height:112px;padding:8px}.drive-header p{display:none}.scene{height:300px;min-height:300px}.brake-panel{min-height:66px;padding:9px}.brake-control{min-height:96px;flex-basis:96px}.brake{width:78px;height:78px;min-height:78px;font-size:.95rem}}

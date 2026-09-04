@@ -1,0 +1,571 @@
+/* Phase 6 — 공공기관형 교통안전교육 UI 최종 정돈 */
+@font-face{
+  font-family:"Pretendard";
+  src:url("./assets/fonts/PretendardVariable.woff2") format("woff2");
+  font-style:normal;
+  font-weight:45 920;
+  font-display:swap;
+}
+:root{
+  --navy:#17364a;--navy-deep:#102b3b;--blue:#246f8e;--blue-soft:#e9f4f7;
+  --coasting:#2f87a3;--braking:#e3a12f;--stopping:#17364a;
+  --orange:#d7792f;--ink:#18313f;--muted:#58707d;--line:#cedade;
+  --surface:#fff;--canvas:#f4f7f6;--shadow:0 6px 18px rgba(16,43,59,.08);
+}
+html,body{color:var(--ink);background:var(--canvas);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-weight:400}
+button,input,select,textarea{font-family:inherit}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.screen{background:var(--canvas)}
+.eyebrow{color:var(--blue);font-size:clamp(.98rem,2.2vw,1.12rem);letter-spacing:.06em}
+.intro{background:#f7f8f4}
+.intro .eyebrow{order:0;margin-bottom:22px}.intro .title-mark{order:1;width:82px;height:82px;margin:0 0 22px;border-width:6px;border-color:var(--orange);color:var(--orange);font-size:1.8rem}.intro h1{order:2;color:var(--navy-deep);font-size:clamp(2.65rem,8.5vw,5rem);letter-spacing:-.065em}.intro .subtitle{order:3;margin:14px 0 42px;color:#627984}.intro>.primary{order:4}.intro .utility-entry{order:5}
+.primary,.secondary{border-radius:13px;box-shadow:0 5px 13px rgba(16,43,59,.12);transition:background .18s,border-color .18s,transform .18s}
+.primary{background:var(--navy);min-width:210px}.primary:hover,.primary:focus-visible{background:#224e68}.secondary{border-color:var(--navy);background:#fff}.text-button,.instructor-entry,.global-back{box-shadow:none}
+.guide,.result,.detail,.speed-select,.compare,.personal,.complete,.survey-intro,.survey-question,.learning-summary{background:var(--canvas)}
+.guide-card,.result-road,.distance-visual,.equation>div,.compare-bars,.why-card,.personal-card,.learning-points,.learning-bars{border:1px solid #dfe7e8;border-radius:16px;box-shadow:var(--shadow)}
+
+/* 주행 장면 — 차분한 도심과 명확한 조작 */
+.drive{background:var(--navy-deep)}
+.drive-header{background:var(--navy-deep)}
+.scene{
+  background:linear-gradient(180deg,#78cbe5 0%,#a9dfed 35%,#d9eff1 61%,#526067 61%);
+}
+/* 외부 이미지 없이 만드는 은은한 구름. 주행 요소보다 뒤에 머문다. */
+.scene:before{
+  content:"";
+  position:absolute;
+  inset:5% 0 auto;
+  height:24%;
+  opacity:.42;
+  background:
+    radial-gradient(ellipse at 15% 56%,rgba(255,255,255,.92) 0 5%,transparent 5.5%),
+    radial-gradient(ellipse at 21% 47%,rgba(255,255,255,.88) 0 6%,transparent 6.5%),
+    radial-gradient(ellipse at 27% 57%,rgba(255,255,255,.82) 0 5%,transparent 5.5%),
+    radial-gradient(ellipse at 74% 42%,rgba(255,255,255,.78) 0 5%,transparent 5.5%),
+    radial-gradient(ellipse at 80% 51%,rgba(255,255,255,.72) 0 6%,transparent 6.5%);
+}
+.skyline.far{
+  bottom:40%;
+  height:39%;
+  opacity:.38;
+  filter:saturate(.78);
+  background:linear-gradient(180deg,#8fc4d0,#6aa5b4);
+  clip-path:polygon(
+    0 100%,0 67%,3% 67%,3% 45%,6% 45%,6% 61%,9% 61%,9% 30%,12% 30%,12% 57%,
+    15% 57%,15% 39%,18% 39%,18% 70%,21% 70%,21% 50%,24% 50%,24% 23%,27% 23%,27% 63%,
+    30% 63%,30% 43%,33% 43%,33% 56%,36% 56%,36% 33%,39% 33%,39% 65%,42% 65%,42% 47%,
+    45% 47%,45% 27%,48% 27%,48% 60%,50% 60%,50% 100%,
+    50% 67%,53% 67%,53% 45%,56% 45%,56% 61%,59% 61%,59% 30%,62% 30%,62% 57%,
+    65% 57%,65% 39%,68% 39%,68% 70%,71% 70%,71% 50%,74% 50%,74% 23%,77% 23%,77% 63%,
+    80% 63%,80% 43%,83% 43%,83% 56%,86% 56%,86% 33%,89% 33%,89% 65%,92% 65%,92% 47%,
+    95% 47%,95% 27%,98% 27%,98% 60%,100% 60%,100% 100%);
+}
+.skyline.near{
+  bottom:40%;
+  height:34%;
+  opacity:.76;
+  filter:saturate(.88);
+  background:
+    repeating-linear-gradient(90deg,transparent 0 13px,rgba(211,239,242,.18) 13px 16px,transparent 16px 28px),
+    linear-gradient(180deg,#3f8fab,#286f8d);
+  clip-path:polygon(
+    0 100%,0 68%,4% 68%,4% 38%,8% 38%,8% 57%,12% 57%,12% 18%,16% 18%,16% 63%,
+    20% 63%,20% 43%,24% 43%,24% 28%,28% 28%,28% 72%,32% 72%,32% 51%,36% 51%,
+    36% 12%,40% 12%,40% 61%,44% 61%,44% 34%,48% 34%,48% 69%,50% 69%,50% 100%,
+    50% 68%,54% 68%,54% 38%,58% 38%,58% 57%,62% 57%,62% 18%,66% 18%,66% 63%,
+    70% 63%,70% 43%,74% 43%,74% 28%,78% 28%,78% 72%,82% 72%,82% 51%,86% 51%,
+    86% 12%,90% 12%,90% 61%,94% 61%,94% 34%,98% 34%,98% 69%,100% 69%,100% 100%);
+  box-shadow:inset 0 -10px rgba(28,83,97,.16);
+}
+.trees{
+  bottom:39.5%;
+  height:108px;
+  align-items:flex-end;
+  justify-content:space-around;
+  gap:0;
+  opacity:.94;
+  filter:saturate(.82);
+  background:
+    radial-gradient(ellipse at 18px 78px,#6f9f5e 0 20px,transparent 21px) 0 0/86px 100% repeat-x,
+    radial-gradient(ellipse at 54px 84px,#447d58 0 25px,transparent 26px) 0 0/104px 100% repeat-x;
+}
+.trees i{
+  position:relative;
+  width:62px;
+  height:68px;
+  flex:0 0 auto;
+  border-radius:52% 48% 45% 55%;
+  background:radial-gradient(circle at 36% 28%,#79a777 0 18%,#4f846d 19% 62%,#376d5d 63% 100%);
+  box-shadow:-18px 8px 0 -8px #5f9271,18px 12px 0 -10px #326957;
+}
+.trees i:after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:50%;
+  bottom:-25px;
+  width:8px;
+  height:31px;
+  border-radius:4px;
+  background:#765b47;
+  transform:translateX(-50%);
+}
+.trees i:nth-child(2){width:52px;height:57px;transform:translateY(5px)}
+.trees i:nth-child(3){width:72px;height:78px;background:radial-gradient(circle at 35% 28%,#82ad78 0 17%,#56866a 18% 62%,#3a6e59 63% 100%)}
+.trees i:nth-child(4){width:57px;height:63px;transform:translateY(3px)}
+.sidewalk{
+  bottom:30%;
+  height:10%;
+  overflow:visible;
+  border-bottom:4px solid #c9c8bf;
+  background:linear-gradient(180deg,#7ea276 0 42%,#6e916b 43% 57%,#d7d6ce 58% 100%);
+}
+/* 녹지와 도로 사이의 낮은 가드레일 */
+.sidewalk:before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:21%;
+  height:7px;
+  border-top:1px solid rgba(255,255,255,.8);
+  border-bottom:2px solid #839096;
+  background:#b9c2c4;
+  box-shadow:0 3px 5px rgba(33,56,64,.14);
+}
+.sidewalk:after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-2px;
+  height:28px;
+  opacity:.75;
+  background:repeating-linear-gradient(90deg,transparent 0 82px,#89959a 82px 87px,transparent 87px 164px);
+}
+.road{
+  background:linear-gradient(180deg,#465159 0%,#3f494f 46%,#353f45 100%);
+  border-top-color:#dfe2dd;
+  box-shadow:inset 0 8px 16px rgba(19,34,41,.12);
+}
+.lane-marks{
+  height:5px;
+  background:repeating-linear-gradient(90deg,#f8f9f4 0 74px,transparent 74px 132px);
+  filter:drop-shadow(0 1px 0 rgba(24,37,43,.25));
+}
+.crate{right:13%;border:4px solid #705039;border-radius:3px;background:#ad7d4d;color:#66462d;font-size:2.3rem;box-shadow:0 4px 8px rgba(23,36,42,.18)}
+.crate.dropping{animation-name:phase6-crate-drop}
+.brake{min-height:78px;border-radius:15px;background:#fff;color:#982f29;box-shadow:0 5px 0 #bbc7c8,0 8px 14px rgba(0,0,0,.12)}
+
+/* 현대적인 일반 승용차 side-view */
+.car{left:27%;bottom:12%;width:clamp(215px,34vw,360px);height:clamp(82px,12.5vw,132px)}
+.car-body{bottom:22%;height:48%;border-radius:23% 34% 13% 12% / 45% 48% 25% 25%;background:#276f89;box-shadow:inset 0 -10px #1f5d75;z-index:2}
+.car-body:before{
+  left:24%;
+  top:-57%;
+  width:54%;
+  height:68%;
+  background:#276f89;
+  /* 지붕에서 앞유리를 지나 보닛으로 이어지는 차체 바깥 실루엣 */
+  clip-path:polygon(17% 5%,62% 2%,70% 6%,97% 88%,96% 100%,0 100%);
+  z-index:0;
+}
+.car-body:after{content:"";position:absolute;left:1.5%;top:42%;width:4%;height:15%;border-radius:2px;background:#b94d3c;box-shadow:0 0 0 1px rgba(92,39,31,.22)}
+.window{top:-46%;height:39%;background:#c6e1e8;z-index:2;border-bottom:2px solid #184b60}
+.window.back{left:29%;width:21%;clip-path:polygon(20% 6%,96% 4%,100% 100%,0 100%)}
+.window.front{
+  left:51%;
+  width:24%;
+  border-radius:2px 4px 1px 1px;
+  /* 오른쪽 경사와 아래 끝점을 차체 프레임 안쪽에 두어 돌출 삼각형을 없앤다. */
+  clip-path:polygon(0 6%,54% 4%,61% 7%,89% 88%,87% 100%,0 100%);
+}
+.light{right:1%;top:42%;width:5%;height:14%;border-radius:2px;background:#f1d77b}
+.wheel{bottom:0;width:20%;border:6px solid #17262e;background:#263740;box-shadow:0 2px 3px rgba(0,0,0,.24)}
+.wheel i{inset:25%;border:3px solid #aebbc0;background:#66777f}
+.wheel.rear{left:15%}.wheel.front{right:14%}.car-shadow{left:6%;bottom:3%;width:88%;height:11%;background:rgba(21,33,39,.24)}
+
+/* 결과와 거리 개념 색상 */
+.result-speed{margin:0 0 15px;color:var(--blue);font-size:clamp(1.25rem,3vw,1.55rem)}.stopping-result{color:var(--stopping);font-size:clamp(4.5rem,15vw,8rem)}
+.result .result-copy{max-width:620px;margin:17px 0 8px;color:#465f6b;font-size:clamp(1.05rem,2.8vw,1.3rem);font-weight:700;line-height:1.55}.result-meaning{margin:2px 0 24px;color:var(--navy);font-size:clamp(1.1rem,3vw,1.35rem)}.result-meaning strong{font-weight:900}.repeat-result .result-road{display:none}.repeat-result .result-copy{margin-bottom:30px;font-size:clamp(1.15rem,3vw,1.4rem)}
+.result-road{border-top:5px solid var(--stopping)}
+.equation .coasting-card{border-top-color:var(--coasting);background:#f0f8fa}.equation .coasting-card h3,.equation .coasting-card strong{color:#236f88}
+.equation .braking-card{border-top-color:var(--braking);background:#fff8e9}.equation .braking-card h3,.equation .braking-card strong{color:#9b6408}
+.equation .total{border-top:8px solid var(--stopping);background:var(--stopping)}
+.equation p b{color:#78909a;font-size:1.15em}.detail-message{width:min(100%,920px);margin:2px 0 16px;padding:15px 18px;border-left:5px solid var(--braking);border-radius:10px;background:#fff8e9;color:#654811;font-weight:850;line-height:1.5}
+.reaction-segment,.reaction-color{background:var(--coasting)}.braking-segment,.braking-color{background:var(--braking)}
+.definition{color:var(--navy)}
+
+/* 설문 — 장식보다 질문과 선택에 집중 */
+.survey-question{background:#f6f8f7}.question-count{background:transparent;color:var(--blue);border:1px solid #9fbcc7;padding:6px 15px}.survey-question h2{width:min(100%,1080px);color:var(--navy-deep);font-size:clamp(1.7rem,2.6vw,2.15rem);font-weight:650;line-height:1.42;letter-spacing:-.018em;word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:balance}.question-emphasis{color:#1d6680;font-weight:900}
+.answer-list{gap:13px}.answer-list button{border-color:#bdcdd2;border-radius:13px;box-shadow:0 2px 7px rgba(16,43,59,.05);background:#fff;text-align:left}.answer-list button:hover:not(:disabled),.answer-list button:focus-visible:not(:disabled){border-color:var(--blue);background:#f3f9fa}.answer-list button.selected{border-color:var(--blue);background:#e3f2f5;color:#165f77;box-shadow:inset 4px 0 var(--blue)}
+
+/* 속도 선택과 비교 */
+.speed-grid button{border-radius:14px;box-shadow:0 3px 10px rgba(16,43,59,.06)}.speed-grid button.completed{border-color:var(--coasting);background:#eff8fa}
+.compare-bars{padding:26px}.compare-axis{height:30px;border-radius:7px}.compare-axis i{border-radius:7px;background:var(--coasting)}.compare-row:nth-child(2) .compare-axis i{background:var(--braking)}
+#compare-title{
+  width:min(100%,1120px);
+  color:var(--navy-deep);
+  font-size:clamp(1.75rem,2.35vw,2rem);
+  font-weight:700;
+  line-height:1.5;
+  letter-spacing:-.01em;
+  white-space:nowrap;
+}
+.compare-title-key{color:var(--orange)}
+.distance-difference{border:1px solid #ead8ad;border-left:6px solid var(--braking);border-radius:14px;background:#fffaf0}.distance-difference strong{color:#845500}
+.ratio-copy{display:flex;align-items:center;justify-content:center;gap:28px;width:min(100%,780px);padding:20px 24px;border:1px solid #c8dce2;border-radius:14px;background:var(--blue-soft);color:#365b69}.ratio-copy span{display:flex;min-width:150px;flex-direction:column;gap:5px;text-align:center}.ratio-copy small{color:#58727e;font-size:.85rem;font-weight:800}.ratio-copy strong{color:var(--navy);font-size:clamp(1.35rem,3.5vw,1.8rem)}.ratio-copy>i{color:var(--blue);font-size:1.8rem;font-style:normal;transform:rotate(-90deg)}.why-card{border-left-color:var(--coasting)}.why-card h3{line-height:1.45}
+
+/* 교수용 — 동일 개념 색상과 읽기 쉬운 자료 */
+.instructor,.admin{--shadow:0 4px 14px rgba(16,43,59,.07)}
+.instructor-header{background:var(--navy-deep)}.instructor-tabs button.active{border-bottom-color:var(--coasting)}
+.instructor-speed-result,.evidence-grid article,.lecture-cards article,.reference-table-wrap{border:1px solid #dbe4e6;box-shadow:var(--shadow)}
+.instructor-speed-result dl>div:nth-child(1) dt{color:var(--coasting)}.instructor-speed-result dl>div:nth-child(2) dt{color:#a36c12}.instructor-speed-result .instructor-total{color:var(--stopping)}
+.instructor-distance-axis i{background:var(--coasting)}.instructor-speed-result:nth-child(2) .instructor-distance-axis i{background:var(--braking)}
+.reference-table tbody td:nth-child(2){color:#236f88}.reference-table tbody td:nth-child(3){color:#9b6408}.reference-table td strong{color:var(--stopping)}
+.lecture-cards article{border-radius:16px}.lecture-cards span{background:var(--blue-soft);color:#1c667e}
+
+/* 관리자 — 간결한 업무형 대시보드 */
+.admin-header{background:#263a45}.admin-tabs button.active{border-bottom-color:var(--coasting)}
+.setting-card,.settings-block,.stat-cards article,.overall-stat,.question-stat,.admin-speed-stats,.session-table-wrap{border:1px solid #dce5e7;border-radius:14px;box-shadow:0 3px 12px rgba(16,43,59,.06)}
+.overall-stat{background:var(--navy-deep)}.admin-speed-bar b{background:var(--coasting)}
+.danger-button{border-color:#aa4545;background:#fff7f7;color:#8f2e2e}
+
+/* Utility 버튼 */
+.global-back,.utility-entry .instructor-entry,.instructor-header button,.admin-header button{font-weight:750}
+.global-back{border-color:#c5d0d4;background:rgba(255,255,255,.92);color:#536b77;box-shadow:0 2px 7px rgba(16,43,59,.07)}
+.utility-entry .instructor-entry{color:#627984}.utility-entry:after{color:#aebcc1}
+
+@media(max-width:640px){
+  .intro .eyebrow{margin-top:34px}.intro .title-mark{width:70px;height:70px;margin-bottom:18px}.intro h1{font-size:clamp(2.25rem,11vw,3.1rem)}
+  .car{left:30%;bottom:12%;width:clamp(190px,56vw,220px);height:90px}.car-body{height:47%}.wheel{width:20%;border-width:5px}
+  .crate{right:8%;width:clamp(48px,14vw,60px)}
+  .brake{width:calc(100% - 28px);min-height:72px;margin-bottom:max(14px,env(safe-area-inset-bottom))}
+  .result-road,.compare-bars,.distance-difference,.ratio-copy,.why-card{width:100%}
+  #compare-title{max-width:520px;font-size:clamp(1.4rem,6.4vw,1.65rem);line-height:1.42;white-space:normal;text-wrap:balance;word-break:keep-all}
+  .ratio-copy{gap:10px;padding:15px 10px}.ratio-copy span{min-width:0;flex:1}.ratio-copy>i{font-size:1.4rem}.survey-question{padding-inline:12px}.survey-question h2{width:100%;font-size:clamp(1.28rem,5.7vw,1.55rem);line-height:1.45;letter-spacing:-.012em}.answer-list{gap:9px;width:100%}.answer-list button{min-height:61px}
+  .utility-entry{right:max(4px,env(safe-area-inset-right))}.global-back{left:max(4px,env(safe-area-inset-left))}
+}
+@media(min-width:641px) and (max-width:1024px){.car{width:clamp(250px,35vw,330px)}.instructor-content,.admin-content{width:calc(100% - 40px)}}
+@media(prefers-reduced-motion:reduce){.primary,.secondary,.answer-list button{transition:none}}
+@keyframes phase6-crate-drop{0%{transform:translateY(-8vh) rotate(-7deg)}75%{transform:translateY(29vh) rotate(4deg)}100%{transform:translateY(28vh) rotate(0)}}
+
+.learning-points p{padding-left:0}.learning-points p:before{content:none}.learning-final-message{width:min(100%,760px);margin:0 0 26px;padding:18px;border-radius:12px;background:var(--navy);color:#fff;font-size:clamp(1.15rem,3vw,1.45rem);font-weight:900;text-align:center}
+
+/* Pretendard 기반 교육생 화면 타이포그래피 */
+.intro h1,.guide h2,.result-speed,.detail h2,.speed-select h2,.personal h2,#compare-title,
+.survey-intro h2,.survey-question h2,.learning-summary h2,.complete h2{
+  font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-weight:750;
+  letter-spacing:-.03em;
+  line-height:1.2;
+  word-break:keep-all;
+}
+.intro h1{font-weight:800;letter-spacing:-.04em}
+.result-speed{font-weight:750}
+.detail h2{
+  width:min(100%,960px);
+  margin-inline:auto;
+  font-size:clamp(2rem,3.8vw,2.85rem);
+  letter-spacing:-.035em;
+  white-space:nowrap;
+}
+#compare-title{line-height:1.24;letter-spacing:-.025em}
+.stopping-result,.equation strong,.compare-row-head span,.ratio-copy strong{
+  font-weight:800;
+  font-variant-numeric:tabular-nums;
+}
+.stopping-result small{font-weight:650}
+.equation h3{font-weight:800}.equation p{font-weight:500}
+.primary,.secondary,.answer-list button,.speed-grid button{font-weight:700}
+.brake{font-weight:800}
+.result .result-copy,.selection-copy,.compare-subtitle,
+.survey-intro>p:not(.eyebrow),.complete>p{font-weight:500}
+.result-meaning,.detail-message,.learning-points p,.why-card p{font-weight:650}
+.reaction-note,.survey-helper,.standard-note,.source-info,
+.visual-labels,.track-caption,.legend,.personal-note,.learning-standard{font-weight:400}
+.intro p,.guide p,.result p,.detail p,.speed-select p,.compare p,.personal p,
+.survey-intro p,.survey-question p,.learning-summary p,.complete p{
+  word-break:keep-all;
+  overflow-wrap:normal;
+}
+@media(max-width:640px){
+  .detail h2{max-width:520px;font-size:clamp(1.75rem,7.6vw,2.1rem);line-height:1.25;white-space:normal;text-wrap:balance}
+  #compare-title{line-height:1.32}
+}
+
+/* 일반 PC 높이에서 상세 설명이 불필요하게 조금 스크롤되지 않도록 여백만 정돈 */
+@media(min-width:641px) and (min-height:720px) and (max-height:850px){
+  .detail{padding-top:34px;padding-bottom:20px}
+  .detail>.eyebrow{margin-bottom:12px}
+  .detail .equation{margin:18px auto}
+  .detail .distance-visual{margin-bottom:14px;padding-block:20px}
+  .detail .detail-message{margin-bottom:12px;padding-block:12px}
+  .detail .reaction-note{margin-bottom:6px}
+}
+
+/* 두 속도 비교 — 막대, 거리 차이, 배수 관계 순으로 읽히는 위계 */
+.compare>.eyebrow{margin-bottom:12px}
+.compare .compare-subtitle{margin:12px 0 18px;font-weight:450}
+.compare .standard-note{
+  margin:0 0 24px;
+  border:1px solid #e4eaec;
+  color:#6b7f88;
+  font-size:.8rem;
+  font-weight:450;
+}
+.compare .comparison-context{
+  width:min(100%,780px);
+  margin:-12px 0 21px;
+  color:#687d86;
+  font-size:clamp(.78rem,1.8vw,.88rem);
+  font-weight:450;
+  line-height:1.5;
+}
+.compare .compare-bars{
+  padding:30px;
+  border:1px solid #d5e1e4;
+  box-shadow:0 9px 26px rgba(16,43,59,.1);
+}
+.compare-row-head{align-items:baseline;gap:18px}
+.compare-row-head strong,.compare-row-head span{white-space:nowrap;font-variant-numeric:tabular-nums}
+.compare-row-head strong{color:var(--navy-deep);font-weight:750}
+.compare-row-head span{font-weight:800}
+.compare .distance-difference{
+  margin-top:20px;
+  padding:21px 24px 23px;
+  border-color:#ead8ad;
+  border-left-width:6px;
+  box-shadow:0 4px 13px rgba(119,80,11,.06);
+}
+.compare .distance-difference p{
+  margin-bottom:7px;
+  color:#6c7c84;
+  font-size:clamp(.9rem,2vw,1rem);
+  font-weight:500;
+}
+.compare .distance-difference strong{
+  color:var(--navy-deep);
+  font-size:clamp(1.55rem,3.6vw,2.15rem);
+  font-weight:750;
+  line-height:1.35;
+}
+.compare .distance-difference strong span{color:#b96b10;font-size:1.1em;font-weight:850}
+.compare .ratio-copy{
+  margin:17px 0 20px;
+  padding:19px 24px;
+  border-color:#c8dce2;
+  box-shadow:none;
+}
+.compare .ratio-copy small{color:#647a84;font-weight:600}
+.compare .ratio-copy strong{color:var(--navy-deep);font-weight:800}
+.compare .ratio-copy>i{color:#397f97}
+.compare .why-card{margin-bottom:18px;padding:20px 23px;border-left-width:5px;background:#fff}
+.compare .why-card h3{margin-bottom:7px;font-weight:750;line-height:1.4}
+.compare .why-card p{color:#607681;font-size:clamp(.9rem,2vw,.98rem);font-weight:450;line-height:1.65}
+.compare .source-info{margin:0 0 22px;color:#72858d;font-size:.74rem;font-weight:400}
+.compare .source-info summary{border-color:#cbd6da;color:#617985;font-weight:600}
+.compare .source-panel{color:var(--ink);font-size:.84rem}
+
+@media(max-width:640px){
+  .compare .compare-bars{padding:20px 16px}
+  .compare-row-head{gap:10px}.compare-row-head strong{font-size:1.25rem}.compare-row-head span{font-size:1.2rem}
+  .compare .distance-difference{padding:18px 14px 20px}
+  .compare .distance-difference strong{font-size:clamp(1.42rem,6.5vw,1.75rem)}
+  .compare .ratio-copy{flex-direction:column;gap:5px;padding:16px 14px}
+  .compare .ratio-copy span{width:100%}.compare .ratio-copy>i{font-size:1.35rem;transform:none}
+  .compare .why-card{padding:18px 16px}
+}
+
+/* 개인 체험 결과 — 정지거리를 먼저 읽고 같은 조건 비교로 이어지는 구성 */
+.personal .personal-subtitle{
+  margin:13px 0 0;
+  color:var(--muted);
+  font-size:clamp(1rem,2.4vw,1.15rem);
+  font-weight:500;
+}
+.personal .personal-list{margin:22px 0 18px}
+.personal .personal-card{
+  display:flex;
+  padding:24px;
+  border:1px solid #dbe5e7;
+  border-radius:16px;
+  flex-direction:column;
+  box-shadow:var(--shadow);
+}
+.personal .personal-card h3{
+  margin:0 0 16px;
+  color:var(--navy);
+  font-size:clamp(1.05rem,2.4vw,1.2rem);
+  font-weight:700;
+  letter-spacing:-.02em;
+}
+.personal-stopping-distance{
+  display:flex;
+  align-items:center;
+  margin-bottom:14px;
+  padding:17px 18px;
+  border-radius:12px;
+  background:#edf4f6;
+  flex-direction:column;
+}
+.personal-stopping-distance strong{
+  color:var(--stopping);
+  font-size:clamp(2.5rem,6vw,3.7rem);
+  font-weight:800;
+  line-height:1;
+  letter-spacing:-.035em;
+  font-variant-numeric:tabular-nums;
+}
+.personal-stopping-distance span{margin-top:7px;color:#526b77;font-size:.9rem;font-weight:650}
+.personal .personal-card dl{margin:0}
+.personal .personal-card dl>div{padding:9px 2px}
+.personal .personal-card dt{color:#617984;font-weight:550}
+.personal .personal-card dd{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.personal .personal-card p{
+  margin:13px 2px 0;
+  color:#7a8b92;
+  font-size:.76rem;
+  font-weight:400;
+}
+.personal-guidance{
+  display:flex;
+  width:min(100%,850px);
+  margin:0 0 19px;
+  padding:16px 20px;
+  border:1px solid #cfe0e4;
+  border-radius:13px;
+  background:var(--blue-soft);
+  flex-direction:column;
+  gap:5px;
+}
+.personal-guidance strong{color:var(--navy);font-size:clamp(.98rem,2.3vw,1.08rem);font-weight:700;word-break:keep-all}
+.personal-guidance span{color:#617984;font-size:clamp(.82rem,2vw,.92rem);font-weight:450;line-height:1.5;word-break:keep-all}
+
+@media(max-width:640px){
+  .personal .personal-card{padding:19px}
+  .personal-stopping-distance{padding:15px}
+  .personal-guidance{padding:15px 14px}
+}
+
+/* 사전·사후 공통 설문 — 명시적 질문 줄과 1열 선택지 */
+.survey-question{
+  justify-content:flex-start;
+  padding-top:clamp(70px,9vh,88px);
+}
+.survey-question .question-count{margin:0 0 16px;font-weight:700}
+.survey-question h2{
+  width:min(100%,1040px);
+  min-height:0;
+  color:var(--navy-deep);
+  font-size:clamp(1.55rem,2.35vw,1.95rem);
+  font-weight:750;
+  line-height:1.3;
+  letter-spacing:-.025em;
+  text-align:center;
+  word-break:keep-all;
+  overflow-wrap:normal;
+  text-wrap:initial;
+}
+.question-line{display:block}
+.question-emphasis{color:#1d6680;font-weight:800}
+.survey-question .answer-list{
+  grid-template-columns:1fr;
+  gap:9px;
+  width:min(100%,760px);
+  margin:22px 0 11px;
+}
+.survey-question .answer-list button{
+  width:100%;
+  min-height:56px;
+  padding:10px 19px;
+  font-size:clamp(.98rem,2vw,1.08rem);
+  font-weight:600;
+  line-height:1.4;
+  text-align:left;
+  word-break:keep-all;
+  overflow-wrap:normal;
+}
+.survey-question .survey-helper{margin:0;color:#74868e;font-size:.78rem;font-weight:400}
+
+@media(max-width:640px){
+  .survey-question{padding:64px 14px 22px}
+  .survey-question .question-count{margin-bottom:14px}
+  .survey-question h2{width:100%;font-size:clamp(1.28rem,5.6vw,1.5rem);line-height:1.34;letter-spacing:-.02em}
+  .survey-question .answer-list{gap:8px;margin:18px 0 10px}
+  .survey-question .answer-list button{min-height:58px;padding:9px 13px;font-size:clamp(.94rem,4.1vw,1.02rem)}
+}
+
+@media(max-height:700px) and (orientation:landscape){
+  .survey-question{padding-top:14px}
+  .survey-question .question-count{margin-bottom:8px}
+  .survey-question h2{font-size:1.35rem;line-height:1.25}
+  .survey-question .answer-list{grid-template-columns:1fr;gap:6px;margin:10px 0 7px}
+  .survey-question .answer-list button{min-height:48px;padding-block:7px}
+}
+
+/* 학습내용 정리 — 세 개념과 마지막 행동 메시지의 위계 */
+.learning-summary{padding-top:clamp(30px,5vh,52px)}
+.learning-summary h2{
+  font-size:clamp(1.85rem,4.5vw,2.75rem);
+  font-weight:750;
+  line-height:1.2;
+  letter-spacing:-.03em;
+  word-break:keep-all;
+}
+.learning-summary .learning-points{
+  width:min(100%,760px);
+  margin:20px 0 18px;
+  padding:5px 24px;
+  border-radius:16px;
+}
+.learning-summary .learning-points p{
+  display:flex;
+  align-items:flex-start;
+  margin:0;
+  padding:16px 4px;
+  color:var(--ink);
+  font-size:clamp(1.05rem,2.35vw,1.22rem);
+  font-weight:600;
+  line-height:1.5;
+  letter-spacing:-.018em;
+  word-break:keep-all;
+  gap:12px;
+}
+.learning-summary .learning-points p+p{border-top:1px solid #e2e9ea}
+.learning-number{flex:0 0 1.45em;color:#54717f;font-weight:750}
+.learning-summary .learning-points strong,.learning-summary .learning-points em{font-style:normal;font-weight:750}
+.learning-key-blue{color:var(--blue)}
+.learning-key-stopping{color:var(--stopping)}
+.learning-key-coasting{color:var(--coasting)}
+.learning-key-braking{color:#aa6d0c}
+.learning-summary .learning-final-message{
+  width:min(100%,760px);
+  margin:0 0 18px;
+  padding:16px 20px;
+  border-radius:12px;
+  font-size:clamp(1.12rem,2.8vw,1.38rem);
+  font-weight:750;
+  line-height:1.4;
+  letter-spacing:-.02em;
+  word-break:keep-all;
+}
+.learning-summary #learningCompleteBtn{
+  min-width:180px;
+  min-height:56px;
+  padding:13px 32px;
+  border:2px solid var(--navy);
+  background:#fff;
+  color:var(--navy);
+  box-shadow:0 3px 9px rgba(16,43,59,.08);
+  font-weight:700;
+}
+.learning-summary #learningCompleteBtn:hover,.learning-summary #learningCompleteBtn:focus-visible{border-color:#224e68;background:#f3f7f8;color:#17364a}
+
+@media(max-width:640px){
+  .learning-summary{padding-top:30px}
+  .learning-summary h2{font-size:clamp(1.75rem,8vw,2.1rem)}
+  .learning-summary .learning-points{margin:17px 0 15px;padding:4px 14px}
+  .learning-summary .learning-points p{padding:14px 1px;font-size:clamp(1rem,4.6vw,1.12rem);line-height:1.48;gap:8px}
+  .learning-summary .learning-final-message{margin-bottom:16px;padding:15px 14px}
+}

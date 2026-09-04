@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="phase1-update.css">
   <link rel="stylesheet" href="phase6.css">
+  <link rel="stylesheet" href="drive-redesign.css">
 </head>
 <body>
   <main id="app">
@@ -48,8 +49,12 @@
 
     <section class="screen drive" id="drive" aria-label="정지거리 체험 주행 화면">
       <header class="drive-header">
-        <span>현재 속도</span>
-        <strong><span id="speedValue">50</span> <small>km/h</small></strong>
+        <h2>브레이크를 밟아 상자를 피하세요!</h2>
+        <p>앞을 잘 보고 상자가 나타나는 순간 브레이크를 밟으세요.</p>
+        <div class="drive-status" aria-label="주행 정보">
+          <span>현재 속도</span>
+          <strong><span id="speedValue">50</span> <small>km/h</small></strong>
+        </div>
       </header>
       <div class="scene" id="scene" aria-label="도심 도로를 달리는 자동차">
         <div class="skyline far"></div>
@@ -67,12 +72,31 @@
         <div class="crate" id="crate" aria-label="도로에 떨어진 화물 상자"><span>↗</span></div>
         <div class="car" id="car" aria-hidden="true">
           <div class="car-shadow"></div>
-          <div class="car-body"><div class="window front"></div><div class="window back"></div><div class="light"></div></div>
-          <div class="wheel rear"><i></i></div><div class="wheel front"><i></i></div>
+          <svg class="sedan" viewBox="0 0 640 230" role="presentation">
+            <defs>
+              <linearGradient id="carPaint" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".7" stop-color="#f4f7f8"/><stop offset="1" stop-color="#cbd3d7"/></linearGradient>
+              <linearGradient id="carGlass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#203847"/><stop offset="1" stop-color="#081923"/></linearGradient>
+            </defs>
+            <path class="sedan-body" d="M62 143l4-17q3-13 21-17l83-13 64-57q17-19 48-19h119q32 0 53 22l48 51 68 7 36 6q20 5 27 19l8 19 2 23q-8 23-43 24H75q-25-2-29-28l3-11q3-7 13-9Z"/>
+            <path class="sedan-glass" d="M210 86l49-47q8-8 24-8h60v55H210Zm147 0V31h42q18 0 32 15l53 40H357Z"/>
+            <path class="sedan-belt" d="M87 109l83-13 30-3h302l68 7"/>
+            <path class="sedan-door" d="M201 93v68m157-68v68m-151 0h145"/>
+            <path class="sedan-sill" d="M88 171h455"/>
+            <path class="sedan-handle" d="M271 112h25m96 0h25"/>
+            <path class="sedan-headlight" d="M558 106l51 10-11 17-42-5Z"/>
+            <path class="sedan-bumper" d="M50 153h33m520-1h31"/>
+            <g transform="translate(140 174)"><g class="wheel rear"><circle r="47"/><circle class="rim" r="29"/><path class="spokes" d="M0-23V23M-23 0h46M-16-16l32 32M16-16l-32 32"/><circle class="hub" r="7"/></g></g>
+            <g transform="translate(506 174)"><g class="wheel front"><circle r="47"/><circle class="rim" r="29"/><path class="spokes" d="M0-23V23M-23 0h46M-16-16l32 32M16-16l-32 32"/><circle class="hub" r="7"/></g></g>
+          </svg>
         </div>
+        <div class="distance-scale" aria-hidden="true"><span>0m</span><span>25m</span><span>50m</span><span>75m</span><span>100m</span></div>
       </div>
-      <p class="drive-message" id="driveMessage" aria-live="polite"></p>
-      <button class="brake" id="brakeBtn"><span aria-hidden="true">●</span> 브레이크</button>
+      <div class="brake-panel">
+        <strong>상자가 보이면 브레이크를 밟으세요!</strong>
+        <span>스페이스바 또는 아래 브레이크 버튼을 누르세요.</span>
+        <p class="drive-message" id="driveMessage" aria-live="polite"></p>
+      </div>
+      <div class="brake-control"><button class="brake" id="brakeBtn"><span aria-hidden="true">●</span> 브레이크</button></div>
     </section>
 
     <section class="screen result" id="result" aria-labelledby="result-title">

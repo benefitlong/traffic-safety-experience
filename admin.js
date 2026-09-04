@@ -5,7 +5,9 @@
   const SESSIONS_KEY = 'stoppingDistanceSessions';
   const INITIAL_ADMIN_PASSWORD = '1234';
   const SPEEDS = [30, 40, 50, 60, 70, 80, 90, 100];
-  const CORRECT_CODES = { q1: 3, q2: 3, q3: 3 };
+  const SURVEY_ANSWER_VERSION = 2;
+  const LEGACY_CORRECT_CODES = { q1: 3, q2: 3, q3: 3 };
+  const CORRECT_CODES = { q1: 3, q2: 2, q3: 3 };
   const DEFAULT_SETTINGS = {
     surveyEnabled: true,
     availableSpeeds: [...SPEEDS],
@@ -72,6 +74,7 @@
     const record = {
       sessionId: activeSession.sessionId,
       datetime: activeSession.datetime,
+      surveyAnswerVersion: SURVEY_ANSWER_VERSION,
       pre: { ...(data.survey.pre || {}) },
       post: { ...(data.survey.post || {}) },
       experiencedSpeeds: data.experiences.map((item) => item.speed),
@@ -92,6 +95,12 @@
     return sessions.filter((session) => [1, 2, 3].every((q) =>
       Number.isInteger(session.pre?.[`q${q}`]) && Number.isInteger(session.post?.[`q${q}`])
     ));
+  }
+
+  function correctCodesFor(session) {
+    return Number(session.surveyAnswerVersion || 1) >= SURVEY_ANSWER_VERSION
+      ? CORRECT_CODES
+      : LEGACY_CORRECT_CODES;
   }
 
   function formatDate(iso) {
@@ -117,8 +126,8 @@
     const completed = completedSurveySessions();
     const questionStats = [1, 2, 3].map((q) => {
       const key = `q${q}`;
-      const preCorrect = completed.filter((session) => session.pre[key] === CORRECT_CODES[key]).length;
-      const postCorrect = completed.filter((session) => session.post[key] === CORRECT_CODES[key]).length;
+      const preCorrect = completed.filter((session) => session.pre[key] === correctCodesFor(session)[key]).length;
+      const postCorrect = completed.filter((session) => session.post[key] === correctCodesFor(session)[key]).length;
       const preRate = percent(preCorrect, completed.length);
       const postRate = percent(postCorrect, completed.length);
       const distribution = (type) => [1, 2, 3, 4].map((answer) =>
@@ -127,8 +136,14 @@
       return { q, preRate, postRate, change: postRate - preRate, preDistribution: distribution('pre'), postDistribution: distribution('post') };
     });
     const totalAnswers = completed.length * 3;
-    const preTotalCorrect = completed.reduce((sum, session) => sum + [1, 2, 3].filter((q) => session.pre[`q${q}`] === 3).length, 0);
-    const postTotalCorrect = completed.reduce((sum, session) => sum + [1, 2, 3].filter((q) => session.post[`q${q}`] === 3).length, 0);
+    const preTotalCorrect = completed.reduce((sum, session) => {
+      const codes = correctCodesFor(session);
+      return sum + [1, 2, 3].filter((q) => session.pre[`q${q}`] === codes[`q${q}`]).length;
+    }, 0);
+    const postTotalCorrect = completed.reduce((sum, session) => {
+      const codes = correctCodesFor(session);
+      return sum + [1, 2, 3].filter((q) => session.post[`q${q}`] === codes[`q${q}`]).length;
+    }, 0);
     const preOverall = percent(preTotalCorrect, totalAnswers);
     const postOverall = percent(postTotalCorrect, totalAnswers);
     const signed = (value) => `${value >= 0 ? '+' : ''}${value}%p`;
@@ -174,9 +189,9 @@
   }
 
   function buildCsv() {
-    const headers = ['session_id', 'datetime', 'pre_q1', 'pre_q2', 'pre_q3', 'post_q1', 'post_q2', 'post_q3', 'experienced_speeds', 'experience_count', 'experience_results_json'];
+    const headers = ['session_id', 'datetime', 'survey_answer_version', 'pre_q1', 'pre_q2', 'pre_q3', 'post_q1', 'post_q2', 'post_q3', 'experienced_speeds', 'experience_count', 'experience_results_json'];
     const rows = sessions.map((session) => [
-      session.sessionId, session.datetime, session.pre?.q1, session.pre?.q2, session.pre?.q3,
+      session.sessionId, session.datetime, session.surveyAnswerVersion || 1, session.pre?.q1, session.pre?.q2, session.pre?.q3,
       session.post?.q1, session.post?.q2, session.post?.q3,
       (session.experiencedSpeeds || []).join('|'), session.experienceCount, JSON.stringify(session.experiences || [])
     ]);
